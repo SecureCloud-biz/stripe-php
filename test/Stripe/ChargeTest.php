@@ -154,6 +154,23 @@ class Stripe_ChargeTest extends StripeTestCase
     );
   }
 
+  public function testCreateWithBitcoinReceiverSource()
+  {
+    self::authorizeFromEnv();
+
+    $receiver = $this->createTestBitcoinReceiver("do+fill_now@stripe.com");
+
+    $charge = Stripe_Charge::create(
+        array(
+          'amount' => 100,
+          'currency' => 'usd',
+          'source' => $receiver->id
+        )
+    );
+
+    $this->assertEqual($receiver->id, $charge->source->id);
+  }
+
   public function markAsSafe()
   {
     self::authorizeFromEnv();
